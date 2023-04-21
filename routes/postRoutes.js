@@ -1,5 +1,6 @@
 const Post = require("../model/postSchema");
 const postRoutes = require("express").Router();
+const Comment = require("../model/commentSchema");
 const cloudinary = require("./cloudinary");
 postRoutes.get("/:skip", async (req, res) => {
   const skip = req.params.skip ? Number(req.params.skip) : 0;
@@ -12,6 +13,36 @@ postRoutes.get("/:skip", async (req, res) => {
     res.send(newdata);
   } catch (error) {
     return error;
+  }
+});
+postRoutes.get("/:name/:skip", async (req, res) => {
+  const skip = req.params.skip ? Number(req.params.skip) : 0;
+  const defaultLimit = 10;
+  try {
+    const newdata = await Post.find({ name: req.params.name })
+      .sort({ _id: "-1" })
+      .skip(skip)
+      .limit(defaultLimit);
+    res.send(newdata);
+  } catch (error) {
+    return error;
+  }
+});
+postRoutes.delete("/:id", async (req, res) => {
+  try {
+    const deletePost = await Post.findOneAndDelete({ _id: req.params.id });
+    const deleteComments = await Comment.deleteMany({ postid: req.params.id });
+    res.status(200).json({
+      status: "Success",
+      Message: "Deleted Successfully",
+      post: deletePost,
+      comments: deleteComments,
+    });
+  } catch (error) {
+    res.status(200).json({
+      status: "Failed",
+      Message: "Unable to Delete",
+    });
   }
 });
 postRoutes.post("/add", async (req, res) => {
