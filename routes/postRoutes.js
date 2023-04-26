@@ -15,12 +15,12 @@ postRoutes.get("/:skip", async (req, res) => {
     return error;
   }
 });
-postRoutes.get("/:name/:skip", async (req, res) => {
+postRoutes.get("/mypost/:skip", async (req, res) => {
   const skip = req.params.skip ? Number(req.params.skip) : 0;
   const defaultLimit = 10;
   try {
-    const newdata = await Post.find({ name: req.params.name })
-      .sort({ _id: "-1" })
+    const newdata = await Post.find({ name: req.headers.name })
+      .sort({ _id: -1 })
       .skip(skip)
       .limit(defaultLimit);
     res.send(newdata);

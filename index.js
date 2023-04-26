@@ -25,6 +25,7 @@ app.use(
 app.use(cors());
 app.use("/users", userRoutes);
 app.use("/post", tokenValidator, postRoutes);
+// app.use("/post", postRoutes);
 app.use("/comment", tokenValidator, commentRoutes);
 app.get("/", (req, res) => {
   res.send("hi");
